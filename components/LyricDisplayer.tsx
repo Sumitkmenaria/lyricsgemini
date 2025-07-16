@@ -1,64 +1,66 @@
-
 import React from 'react';
 
 interface LyricDisplayerProps {
-  lyric: string;
+  currentLyric: string;
+  previousLyric: string;
+  nextLyric: string;
   fontClass: string;
 }
 
-const LyricDisplayer: React.FC<LyricDisplayerProps> = ({ lyric, fontClass }) => {
+const LyricDisplayer: React.FC<LyricDisplayerProps> = ({ 
+  currentLyric, 
+  previousLyric, 
+  nextLyric, 
+  fontClass 
+}) => {
   return (
-    <div 
-        className="h-20 md:h-24 lg:h-32 flex items-center justify-center w-full px-4"
-        aria-live="polite" 
-        aria-atomic="true"
-    >
-      {lyric && (
-        <div className="glass rounded-xl p-4 md:p-6 max-w-full">
+    <div className="w-full max-w-4xl text-center space-y-4 px-4">
+      {/* Previous Lyric */}
+      {previousLyric && (
+        <div className="opacity-40 transform scale-90">
+          <p className={`text-lg md:text-xl text-gray-300 ${fontClass} transition-all duration-500`}>
+            {previousLyric}
+          </p>
+        </div>
+      )}
+      
+      {/* Current Lyric */}
+      {currentLyric && (
+        <div className="glass rounded-2xl p-6 md:p-8 backdrop-blur-lg border border-white/20">
           <p 
-            className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white text-center tracking-wide leading-tight ${fontClass} animate-lyric-glow`}
+            className={`text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight ${fontClass} animate-lyric-glow`}
             style={{
-              textShadow: '0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(103, 232, 249, 0.7), 0 0 60px rgba(167, 139, 250, 0.5)'
+              textShadow: '0 0 30px rgba(255, 255, 255, 0.8), 0 0 60px rgba(103, 232, 249, 0.9), 0 0 90px rgba(167, 139, 250, 0.6)',
+              fontWeight: fontClass === 'font-baloo' ? '800' : fontClass === 'font-mukta' ? '700' : '600'
             }}
           >
-            {lyric.split(' ').map((word, wordIndex) => (
-              <span key={wordIndex} className="inline-block">
+            {currentLyric.split(' ').map((word, wordIndex) => (
+              <span key={wordIndex} className="inline-block mr-2 md:mr-3">
                 {word.split('').map((char, charIndex) => (
                   <span 
                       key={charIndex} 
                       className="inline-block animate-char-in"
-                      style={{ animationDelay: `${wordIndex * 100 + charIndex * 30}ms`}}
+                      style={{ animationDelay: `${wordIndex * 100 + charIndex * 50}ms`}}
                   >
                     {char}
                   </span>
                 ))}
-                &nbsp;
               </span>
             ))}
+          </p>
+        </div>
+      )}
+      
+      {/* Next Lyric */}
+      {nextLyric && (
+        <div className="opacity-30 transform scale-85">
+          <p className={`text-base md:text-lg text-gray-400 ${fontClass} transition-all duration-500`}>
+            {nextLyric}
           </p>
         </div>
       )}
     </div>
   );
 };
-
-const style = document.createElement('style');
-style.innerHTML = `
-  @keyframes char-in {
-    0% {
-      opacity: 0;
-      transform: translateY(20px) scale(0.8);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-  .animate-char-in {
-    opacity: 0;
-    animation: char-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-`;
-document.head.appendChild(style);
 
 export default LyricDisplayer;

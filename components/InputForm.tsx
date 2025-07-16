@@ -162,13 +162,15 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, initialData, error }) =
       </div>
       
       <div className="text-center pt-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
         <button
           type="submit"
           disabled={!isFormValid}
-          className="px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold text-white bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-pulse-glow"
+          className="px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold text-white bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-pulse-glow min-w-[200px]"
         >
           Create Video Preview
         </button>
+        </div>
       </div>
     </form>
   );

@@ -59,20 +59,12 @@ const App: React.FC = () => {
   }, []);
 
   const handleBack = () => {
-    // Revoke object URLs to prevent memory leaks
-    if (appState.audioUrl) URL.revokeObjectURL(appState.audioUrl);
-    if (appState.imageUrl) URL.revokeObjectURL(appState.imageUrl);
-
     setAppState(prev => ({
       ...prev,
       view: View.INPUT,
-      audioUrl: null,
-      imageUrl: null,
-      structuredLyrics: [],
       error: null,
-      imageColors: [],
       isExporting: false,
-      // Keep other form data
+      // Keep all other data including audioUrl, imageUrl, structuredLyrics, etc.
     }));
   };
 
