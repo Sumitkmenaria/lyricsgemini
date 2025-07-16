@@ -42,4 +42,23 @@ const LyricDisplayer: React.FC<LyricDisplayerProps> = ({ lyric, fontClass }) => 
   );
 };
 
+const style = document.createElement('style');
+style.innerHTML = `
+  @keyframes char-in {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  .animate-char-in {
+    opacity: 0;
+    animation: char-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+`;
+document.head.appendChild(style);
+
 export default LyricDisplayer;
