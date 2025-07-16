@@ -2,9 +2,12 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { UploadIcon } from './icons/Icons';
 import { AspectRatio, HindiFont } from '../types';
+import { extractLyricsFromAudio, convertSegmentsToLyrics } from '../services/speechToTextService';
+import { enhanceLyricSynchronization } from '../services/geminiService';
 
 interface InputFormProps {
   onSubmit: (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => void;
+  onAutoExtractLyrics: (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => void;
   initialData: {
     lyrics: string;
     songName: string;
@@ -155,21 +158,35 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, initialData, error }) =
           id="lyrics"
           value={lyrics}
           onChange={(e) => setLyrics(e.target.value)}
-          placeholder="यहाँ अपने गीत के बोल पेस्ट करें..."
+          placeholder="यहाँ अपने गीत के बोल पेस्ट करें या ऑटो-एक्सट्रैक्ट का उपयोग करें..."
           className={`w-full h-40 md:h-48 p-4 bg-gray-700/80 border border-gray-600 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300 hover:bg-gray-700 text-base md:text-lg ${fonts.find(f => f.key === hindiFont)?.className}`}
-          required
         />
+        
+        {/* Auto Extract Button */}
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={handleAutoExtractLyrics}
+            disabled={!canAutoExtract || isExtracting}
+            className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-lg hover:from-green-500 hover:to-emerald-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+          >
+            {isExtracting ? 'Extracting Lyrics...' : 'Auto-Extract Lyrics from Audio'}
+          </button>
+          <p className="text-xs text-gray-400 mt-2">
+            Uses AI to automatically extract lyrics with timestamps from your audio
+          </p>
+        </div>
       </div>
       
       <div className="text-center pt-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <button
-          type="submit"
-          disabled={!isFormValid}
-          className="px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold text-white bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-pulse-glow min-w-[200px]"
-        >
-          Create Video Preview
-        </button>
+          <button
+            type="submit"
+            disabled={!isFormValid || isExtracting}
+            className="px-8 md:px-12 py-3 md:py-4 text-base md:text-lg font-bold text-white bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 animate-pulse-glow min-w-[200px]"
+          >
+            {isExtracting ? 'Processing...' : 'Create Video Preview'}
+          </button>
         </div>
       </div>
     </form>

@@ -26,6 +26,21 @@ const App: React.FC = () => {
     hindiFont: 'Mukta',
   });
 
+  const handleAutoExtractAndCreate = useCallback(async (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => {
+    setAppState(prev => ({ ...prev, isLoading: true, error: null, isExporting: false }));
+    try {
+      const imageUrl = URL.createObjectURL(data.image);
+      const audioUrl = URL.createObjectURL(data.audio);
+      
+      // Extract lyrics with timestamps from audio
+      const segments = await extractLyricsFromAudio(data.audio);
+      
+      // Use Gemini to enhance synchronization with provided lyrics (if any)
+      const structuredLyrics = data.lyrics.trim() 
+        ? await enhanceLyricSynchronization(segments, data.lyrics)
+        : convertSegmentsToLyrics(segments);
+      
+      const imageColors = await extractColors(imageUrl);
   const handleCreateClick = useCallback(async (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => {
     setAppState(prev => ({ ...prev, isLoading: true, error: null, isExporting: false }));
     try {
@@ -53,6 +68,27 @@ const App: React.FC = () => {
       }));
     } catch (error) {
       console.error('Failed to generate video preview:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+      setAppState(prev => ({ ...prev, isLoading: false, error: `Failed to process your request. ${errorMessage}` }));
+    }
+  }, []);
+
+      setAppState(prev => ({
+        ...prev,
+        view: View.PREVIEW,
+        audioUrl,
+        imageUrl,
+        rawLyrics: data.lyrics || segments.map(s => s.text).join('\n'),
+        structuredLyrics,
+        isLoading: false,
+        songName: data.songName,
+        creatorName: data.creatorName,
+        aspectRatio: data.aspectRatio,
+        imageColors,
+        hindiFont: data.hindiFont,
+      }));
+    } catch (error) {
+      console.error('Failed to auto-extract and create video preview:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
       setAppState(prev => ({ ...prev, isLoading: false, error: `Failed to process your request. ${errorMessage}` }));
     }
@@ -111,6 +147,7 @@ const App: React.FC = () => {
         {!appState.isLoading && !appState.isExporting && appState.view === View.INPUT && (
           <InputForm
             onSubmit={handleCreateClick}
+            onAutoExtractLyrics={handleAutoExtractAndCreate}
             initialData={{
               lyrics: appState.rawLyrics,
               songName: appState.songName,
