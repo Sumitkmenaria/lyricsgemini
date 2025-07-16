@@ -117,31 +117,35 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const fontClass = useMemo(() => fontMap[hindiFont] || 'font-mukta', [hindiFont]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center max-h-[85vh]">
-        <div className={`w-full h-full ${aspectRatioClass} relative flex flex-col justify-between items-center bg-black rounded-lg shadow-2xl shadow-cyan-500/10 overflow-hidden animate-fade-in`}>
+    <div className="w-full h-full flex items-center justify-center max-h-[90vh] px-4">
+        <div className={`w-full max-w-4xl ${aspectRatioClass} relative flex flex-col justify-between items-center bg-black rounded-xl md:rounded-2xl shadow-2xl shadow-cyan-500/20 overflow-hidden animate-fade-in`}>
             <img src={imageUrl} alt="background" className="absolute top-0 left-0 w-full h-full object-cover opacity-30 z-0" />
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 via-black/20 to-black/80 z-10"></div>
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/90 via-black/30 to-black/90 z-10"></div>
             
-            <div className="w-full p-4 flex justify-between items-center z-20">
-                <button onClick={onBack} className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                    <BackIcon className="w-5 h-5" />
-                    <span className="text-sm font-semibold">Back to Editor</span>
+            <div className="w-full p-3 md:p-4 flex justify-between items-center z-20">
+                <button onClick={onBack} className="flex items-center gap-2 px-3 py-2 glass rounded-lg hover:bg-white/20 transition-all duration-300 text-sm md:text-base">
+                    <BackIcon className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="font-semibold hidden sm:inline">Back to Editor</span>
+                    <span className="font-semibold sm:hidden">Back</span>
                 </button>
                  <button 
                     onClick={onExport} 
                     disabled={!isStarted}
-                    className="flex items-center gap-2 px-3 py-2 bg-cyan-500/80 rounded-lg hover:bg-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                    <ExportIcon className="w-5 h-5" />
-                    <span className="text-sm font-semibold">Export Video</span>
+                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base animate-pulse-glow">
+                    <ExportIcon className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="font-semibold hidden sm:inline">Export Video</span>
+                    <span className="font-semibold sm:hidden">Export</span>
                 </button>
             </div>
 
-            <div className="absolute bottom-4 left-4 text-left z-20 text-white/70">
-                <p className="font-bold text-lg">{songName}</p>
-                <p className="text-sm">by {creatorName}</p>
+            <div className="absolute bottom-16 md:bottom-20 left-3 md:left-4 text-left z-20">
+                <div className="glass rounded-lg p-3 md:p-4">
+                    <p className="font-bold text-base md:text-lg text-white">{songName}</p>
+                    <p className="text-xs md:text-sm text-gray-300">by {creatorName}</p>
+                </div>
             </div>
 
-            <div className="w-full flex-grow flex flex-col justify-end items-center z-20 p-8 space-y-8">
+            <div className="w-full flex-grow flex flex-col justify-center items-center z-20 p-4 md:p-8 space-y-6 md:space-y-8">
                 <LyricDisplayer 
                     lyric={currentLyricIndex > -1 ? lyrics[currentLyricIndex]?.text : ''} 
                     fontClass={fontClass}
@@ -150,9 +154,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
                 <AudioVisualizer audioRef={audioRef} isPlaying={isPlaying} colors={imageColors} />
             </div>
 
-            <div className="w-full p-4 flex justify-center items-center gap-6 z-20">
-                <button onClick={handlePlayPause} className="p-4 bg-cyan-500/80 rounded-full hover:bg-cyan-500 transition-colors shadow-lg">
-                {isFinished ? <ReplayIcon className="w-8 h-8"/> : isPlaying ? <PauseIcon className="w-8 h-8" /> : <PlayIcon className="w-8 h-8" />}
+            <div className="w-full p-3 md:p-4 flex justify-center items-center gap-6 z-20">
+                <button onClick={handlePlayPause} className="p-3 md:p-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full hover:from-cyan-400 hover:to-purple-400 transition-all duration-300 shadow-lg animate-pulse-glow">
+                {isFinished ? <ReplayIcon className="w-6 h-6 md:w-8 md:h-8"/> : isPlaying ? <PauseIcon className="w-6 h-6 md:w-8 md:h-8" /> : <PlayIcon className="w-6 h-6 md:w-8 md:h-8" />}
                 </button>
             </div>
             

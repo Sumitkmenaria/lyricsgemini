@@ -111,9 +111,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 text-white flex flex-col items-center p-2 sm:p-4 md:p-6 lg:p-8">
       <Header />
-      <main className="w-full max-w-7xl flex-grow flex flex-col items-center justify-center">
+      <main className="w-full max-w-7xl flex-grow flex flex-col items-center justify-center min-h-0">
         {(appState.isLoading || appState.isExporting) && <Loader message={getLoaderMessage()} />}
         
         {!appState.isLoading && !appState.isExporting && appState.view === View.INPUT && (
