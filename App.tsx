@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import InputForm from './components/InputForm';
 import VideoPreview from './components/VideoPreview';
@@ -26,21 +25,6 @@ const App: React.FC = () => {
     hindiFont: 'Mukta',
   });
 
-  const handleAutoExtractAndCreate = useCallback(async (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => {
-    setAppState(prev => ({ ...prev, isLoading: true, error: null, isExporting: false }));
-    try {
-      const imageUrl = URL.createObjectURL(data.image);
-      const audioUrl = URL.createObjectURL(data.audio);
-      
-      // Extract lyrics with timestamps from audio
-      const segments = await extractLyricsFromAudio(data.audio);
-      
-      // Use Gemini to enhance synchronization with provided lyrics (if any)
-      const structuredLyrics = data.lyrics.trim() 
-        ? await enhanceLyricSynchronization(segments, data.lyrics)
-        : convertSegmentsToLyrics(segments);
-      
-      const imageColors = await extractColors(imageUrl);
   const handleCreateClick = useCallback(async (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => {
     setAppState(prev => ({ ...prev, isLoading: true, error: null, isExporting: false }));
     try {
@@ -72,6 +56,22 @@ const App: React.FC = () => {
       setAppState(prev => ({ ...prev, isLoading: false, error: `Failed to process your request. ${errorMessage}` }));
     }
   }, []);
+
+  const handleAutoExtractAndCreate = useCallback(async (data: { audio: File; image: File; lyrics: string; songName: string; creatorName: string; aspectRatio: AspectRatio; hindiFont: HindiFont; }) => {
+    setAppState(prev => ({ ...prev, isLoading: true, error: null, isExporting: false }));
+    try {
+      const imageUrl = URL.createObjectURL(data.image);
+      const audioUrl = URL.createObjectURL(data.audio);
+      
+      // Extract lyrics with timestamps from audio
+      const segments = await extractLyricsFromAudio(data.audio);
+      
+      // Use Gemini to enhance synchronization with provided lyrics (if any)
+      const structuredLyrics = data.lyrics.trim() 
+        ? await enhanceLyricSynchronization(segments, data.lyrics)
+        : convertSegmentsToLyrics(segments);
+      
+      const imageColors = await extractColors(imageUrl);
 
       setAppState(prev => ({
         ...prev,
