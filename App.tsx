@@ -156,6 +156,7 @@ const App: React.FC = () => {
               hindiFont: appState.hindiFont,
             }}
             error={appState.error}
+            isExtracting={appState.isLoading}
           />
         )}
         

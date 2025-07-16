@@ -16,6 +16,7 @@ interface InputFormProps {
     hindiFont: HindiFont;
   };
   error: string | null;
+  isExtracting?: boolean;
 }
 
 const fonts: { key: HindiFont, name: string, className: string }[] = [
@@ -24,7 +25,7 @@ const fonts: { key: HindiFont, name: string, className: string }[] = [
     { key: 'Baloo', name: 'Bold', className: 'font-baloo' },
 ];
 
-const InputForm: React.FC<InputFormProps> = ({ onSubmit, initialData, error }) => {
+const InputForm: React.FC<InputFormProps> = ({ onSubmit, onAutoExtractLyrics, initialData, error, isExtracting = false }) => {
   const [audio, setAudio] = useState<File | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [lyrics, setLyrics] = useState<string>(initialData.lyrics);
@@ -37,6 +38,14 @@ const InputForm: React.FC<InputFormProps> = ({ onSubmit, initialData, error }) =
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   const isFormValid = useMemo(() => audio && image && lyrics.trim().length > 0 && songName.trim().length > 0 && creatorName.trim().length > 0, [audio, image, lyrics, songName, creatorName]);
+
+  const canAutoExtract = useMemo(() => audio && image && songName.trim().length > 0 && creatorName.trim().length > 0, [audio, image, songName, creatorName]);
+
+  const handleAutoExtractLyrics = () => {
+    if (canAutoExtract) {
+      onAutoExtractLyrics({ audio, image, lyrics, songName, creatorName, aspectRatio, hindiFont });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
